@@ -1,19 +1,51 @@
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useState, useReducer } from 'react';
+
+import * as Font from 'expo-font';
+import { AppLoading } from 'expo';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+
+import GameStart from './screens/GameStart'
+import GameEnd from './screens/GameEnd'
+// import { Context, initialState, reducer } from './components/Store'
+
+// TODO: Manage the score globally with Redux or useContext
+
+const fetchFonts = () => {
+  return Font.loadAsync({
+    'open-sans': require('./assets/fonts/OpenSans-Regular.ttf'),
+    'open-sans-bold': require('./assets/fonts/OpenSans-Bold.ttf')
+  });
+};
+const Stack = createStackNavigator();
 
 export default function App() {
+
+
+  const [fontsLoaded, setFontsLoaded] = useState(false);
+
+  if (!fontsLoaded) {
+    return (
+      <AppLoading
+        startAsync={fetchFonts}
+        onFinish={() => setFontsLoaded(true)}
+        onError={err => console.log(err)}
+      />
+    );
+  }
+
+
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-    </View>
+
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName="Start">
+        <Stack.Screen name="Start" component={GameStart} />
+        <Stack.Screen name="End" component={GameEnd} />
+      </Stack.Navigator>
+    </NavigationContainer >
+
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+
